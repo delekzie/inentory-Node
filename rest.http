@@ -1,0 +1,87 @@
+######
+GET http://localhost:3000/user/login
+
+
+
+####
+GET http://localhost:3000/user/signup
+
+
+######
+POST http://localhost:3000/user/login
+Content-Type: application/json
+
+{
+	"email" : "avadnikky@gmail.com",
+	"password" : "avadnikky"
+}
+
+
+
+
+####
+POST http://localhost:3000/user/signup
+Content-Type: application/json
+
+{
+	"email" : "aderinwaleayodeji@gmail.com",
+	"password" : "devak1234"
+}
+
+
+####Products URL
+
+GET http://localhost:3000/products
+
+
+
+
+
+
+####
+POST http://localhost:3000/products
+Content-Type: application/json
+
+{
+	"name" : "Wellness Therapy Pure Epsom Salt Soak with Rosemary & Mint",
+	"price" : 7000.00,
+	"image" : "https://www.drteals.com/wp-content/uploads/2023/05/811068010517_Front-scaled-e1684964010242-500x500.jpg", 
+	"category" : "Pure Epsom Salt Soaks",
+	"description" : "Helps Ease Aches & Soreness from Muscle Pains",
+	"inStock" : true
+}
+
+#############
+GET http://localhost:3000/products/6744913e75a9bae18510e5c6
+
+
+
+
+
+
+
+
+
+##############
+GET http://localhost:3000/products?category=Kids
+
+
+
+
+
+##############
+POST http://localhost:3000/cart
+Content-Type: application/json
+
+{
+	"userId" : "67449d7103499abf248c201d",
+	"item" : {
+		"productId" : "67449d7103499abf248c201d",
+		"quantity": 1
+	}
+}
+
+
+
+###
+GET http://localhost:3000/cart/6751784065fc70a4c885892a
