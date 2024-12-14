@@ -56,7 +56,7 @@ module.exports = {
 			console.log(user)
 			
 			if(!user) return res.status(404).json({message: "User not found"})
-			return res.status(201).send(user)	
+			return res.status(201).json({user: user, message: "Login Successful", status: "success"})	
 		}catch(error){
 			res.status(500).json({message: "Server Error"})
 	}

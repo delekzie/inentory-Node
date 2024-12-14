@@ -5,90 +5,63 @@ const Cart = require("../Models/cart.model")
 const Product = require("../Models/product.model")
 
 
-
-
-
-
-
-
-
 router.post("/", async (req, res) => {
-  // Destructure required fields from request body
   const { userId, item } = req.body;
   console.log("Request Body:", req.body);
+
   try {
-    // Find the product in the database using the correct query
-    const product = await Product.findById(item.productId);
-    console.log(product)
+    // Validate required fields
+    if (!userId || !item?.productId || !item?.quantity) {
+      return res
+        .status(400)
+        .json({ message: "userId, productId, and quantity are required" });
+    }
+
+    const productId = item.productId;
+
+    // Find the product in the database
+    const product = await Product.findById(productId);
     if (!product) {
       console.log("Product not found");
       return res.status(404).json({ message: "Product not found" });
     }
+
     // Check if a cart exists for the given user
     let cart = await Cart.findOne({ userId });
+
     if (!cart) {
-      // If the cart doesn't exist, create a new one
-      cart = new Cart({ 
+      // Create a new cart if none exists
+      cart = new Cart({
         userId,
-         items: [
+        items: [
           {
             productId,
-            quantity 
-          }
-        ] 
+            quantity: item.quantity,
+          },
+        ],
       });
-    }
-    // Check if the product is already in the cart
-    const productId = item.productId
-    const itemIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
-    );
-    if (itemIndex > -1) {
-      // If the product exists in the cart, update its quantity
-      cart.items[itemIndex].quantity += item.quantity;
     } else {
-      // If the product is not in the cart, add it
-      cart.items.push({ productId, quantity:item.quantity });
+      // Check if the product is already in the cart
+      const itemIndex = cart.items.findIndex(
+        (cartItem) => cartItem.productId.toString() === productId
+      );
+
+      if (itemIndex > -1) {
+        // If the product exists in the cart, update its quantity
+        cart.items[itemIndex].quantity += item.quantity;
+      } else {
+        // If the product is not in the cart, add it
+        cart.items.push({ productId, quantity: item.quantity });
+      }
     }
+    // Save the cart to the database
     await cart.save();
-    res.status(201).json(cart);
+    res.status(201).json({ cart, message: "Product Added Successfully!", status: "success" });
   } catch (error) {
     console.error("Error adding to cart:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to add to cart", error: error.message });
+    res.status(500).json({ message: "Failed to add to cart", error: error.message });
   }
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+});
 
 //finding by id
 
@@ -111,24 +84,7 @@ router.get('/:userId', async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//how to get all the product in the cart
 
 router.get("/", async(req, res)=> {
 
@@ -147,23 +103,45 @@ router.get("/", async(req, res)=> {
 
 
 
-router.delete("/:productId", async(req,res)=>{
-  const { productId } = req.params;
- 
-  console.log(req.params) 
-  try{
-    const response = await Cart.findById(productId)
-    if (!response) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-      // Delete the product from the database
-      await Product.findByIdAndDelete(productId);
-      res.status(200).json({ message: 'Product deleted successfully' });
-  }catch(error){
-    console.log(error)
-    console.error('Error deleting product:', error);
-    res.status(500).json({ message: 'Failed to delete product', error: error.message });
 
+
+
+
+
+
+//how to delete product from users cart
+router.delete("/:userId/:productId", async (req, res) => {
+  const { userId, productId } = req.params;
+  console.log("USE IS AND PRODUCT ID",req.params)
+
+  try {
+    // Find the cart for the specified user
+    const userCart = await Cart.findOne({ userId });
+    console.log("ALL CART", userCart)
+
+    if (!userCart) {
+      return res.status(404).json({ message: 'Cart not found for this user' });
+    }
+
+    // Remove the product from the cart
+    const updatedItems = userCart.items.filter(
+      (item) => item.productId.toString() !== productId
+    );
+    console.log("UPDATE IS", updatedItems)
+    // If no changes, the product was not in the cart
+    if (updatedItems.length === userCart.items.length) {
+      return res.status(404).json({ message: 'Product not found in cart' });
+    }
+
+    // Update the cart with the filtered items
+    userCart.items = updatedItems;
+    await userCart.save();
+
+    res.status(200).json({ message: 'Product removed from cart successfully' });
+  } catch (error) {
+    console.error('Error deleting product from cart:', error);
+    res.status(500).json({ message: 'Failed to delete product from cart', error: error.message });
   }
-})
+});
+
 module.exports = router;

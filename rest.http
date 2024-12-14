@@ -43,10 +43,10 @@ POST http://localhost:3000/products
 Content-Type: application/json
 
 {
-	"name" : "Wellness Therapy Pure Epsom Salt Soak with Rosemary & Mint",
-	"price" : 7000.00,
-	"image" : "https://www.drteals.com/wp-content/uploads/2023/05/811068010517_Front-scaled-e1684964010242-500x500.jpg", 
-	"category" : "Pure Epsom Salt Soaks",
+	"name" : "Calm Your Mind Pure Epsom Salt Soak with Ashwagandha",
+	"price" : 8500.00,
+	"image" : "https://www.drteals.com/wp-content/uploads/2020/03/810021200309_Front.jpg", 
+	"category" : "Category: Pure Epsom Salt Soaks",
 	"description" : "Helps Ease Aches & Soreness from Muscle Pains",
 	"inStock" : true
 }
@@ -84,4 +84,9 @@ Content-Type: application/json
 
 
 ###
-GET http://localhost:3000/cart/6751784065fc70a4c885892a
+GET http://localhost:3000/cart/675ac7085e10f1bc6c046247
+
+
+###
+
+DELETE http://localhost:3000/cart/675ac7085e10f1bc6c046247/67448853f889299dd6e1764e
