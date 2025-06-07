@@ -144,4 +144,19 @@ router.delete("/:userId/:productId", async (req, res) => {
   }
 });
 
+    // Example Express logic
+router.get("/products", async (req, res) => {
+  const { category, search } = req.query;
+
+  const filter = {};
+  if (category) filter.category = category;
+  if (search) {
+    filter.name = { $regex: search, $options: "i" }; // case-insensitive search
+  }
+
+  const products = await Product.find(filter);
+  res.json(products);
+});
+
+
 module.exports = router;

@@ -5,7 +5,7 @@ const User = require("../Models/user.model")
 const handleError = (err) => {
 	console.log(err.message, err.code)
 	//all possible error in our database userSchema
-	let errors = {email:"", password: ""}
+	let errors = {email: "", password: ""}
 
 
 	// duplicate error code
